@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Bots</title>
+    <script type="text/javascript" src="jsmpeg.min.js"></script>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <h1>
+        Bot controller
+    </h1>
+    <hr/>
+    <p>
+        use arrows or 'WASD' keys to control, 'space' - to activate weapon
+    </p>
+    <hr/>
+    <div class="status">
+        <span>
+            <span>Status :</span>
+            <span id="status">view only</span>
+        </span>
+        <span hidden>
+            <span>Color :</span>
+            <span id="color">red</span>
+        </span>
+        <span hidden>
+            <span>Battery level:</span>
+            <span id="battery">100%</span>
+        </span>
+    </div>
+    <div id="container">
+        <canvas id="video-canvas"></canvas>
+    </div>
+</body>
+</html>
