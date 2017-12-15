@@ -45,15 +45,27 @@ controlsWs.onopen = () => {
     console.log('Control connection opened');
 
     window.onkeydown = event => {
-        const key = keyCodes[event.keyCode];
+        let key = keyCodes[event.keyCode];
         if (key) {
             if (key in pressedKeys) {
                 return;
             }
             pressedKeys[key] = true;
+            if (key === 'fire') {
+
+            } else if (('forward' in pressedKeys) && ('left' in pressedKeys)) {
+                key = 'forward-left'
+            } else if (('forward' in pressedKeys) && ('right' in pressedKeys)) {
+                key = 'forward-right'
+            } else if (('backward' in pressedKeys) && ('left' in pressedKeys)) {
+                key = 'backward-left'
+            } else if (('backward' in pressedKeys) && ('right' in pressedKeys)) {
+                key = 'backward-right'
+            }
             processControlCommand(controlsWs, botSettings.uuid, botSettings.color, key);
         }
     };
+
 
     window.onkeyup = event => {
         const key = keyCodes[event.keyCode];
@@ -61,10 +73,12 @@ controlsWs.onopen = () => {
             delete pressedKeys[key];
             if (key === 'fire') {
                 processControlCommand(controlsWs, botSettings.uuid, botSettings.color, 'steady');
-                return;
+                return
             }
-            if (_.isEmpty(pressedKeys)) {
+            if (_.isEmpty(pressedKeys) || (Object.keys(pressedKeys).length === 1 && 'fire' in pressedKeys)) {
                 processControlCommand(controlsWs, botSettings.uuid, botSettings.color, 'stop');
+            } else if (Object.keys(pressedKeys).length === 1) {
+                processControlCommand(controlsWs, botSettings.uuid, botSettings.color, Object.keys(pressedKeys)[0]);
             }
         }
     };

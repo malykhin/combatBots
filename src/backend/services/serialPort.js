@@ -3,6 +3,8 @@ const Readline = SerialPort.parsers.Readline;
 
 const config = require('../../../config');
 
+SerialPort.list().then(data => console.log('Available ports:', data));
+
 const port = new SerialPort(config.serialPort, {
     baudRate: config.serialBaudRate,
     autoOpen: true
@@ -14,7 +16,7 @@ port.on('error', error => {
     console.log('Serial port error: ', error);
 });
 
-port.on('open', data => {
+port.on('open', () => {
     console.log('Serial port opened');
     port.write('Connected\n');
 });

@@ -5,6 +5,6 @@ module.exports = {
     controlsPort: 8083,
     host: 'localhost',
     controlsTimeout: 5000,
-    serialPort: '/dev/tty.usbmodem1411',
+    serialPort: '/dev/tty.usbmodem1421',
     serialBaudRate: 115200
 };

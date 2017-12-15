@@ -52,9 +52,16 @@ socketServer.on('connection', (socket, upgradeReq) => {
     socket.on('close', () => {
         socketServer.connectionCount--;
         releaseControlsColor(socket.controlsColor);
+        flushRobot(socket.controlsColor);
         console.log(`Disconnected WebSocket Controls(${socketServer.connectionCount} total)`);
     });
 
+    socket.on('error', () => {
+        socketServer.connectionCount--;
+        releaseControlsColor(socket.controlsColor);
+        flushRobot(socket.controlsColor);
+        console.log(`Error WebSocket Controls, closed(${socketServer.connectionCount} total)`);
+    });
 
 });
 
@@ -62,7 +69,7 @@ function heartbeat() {
     this.isAlive = true;
 }
 
-const interval = setInterval(() => {
+setInterval(() => {
     socketServer.clients.forEach(socket => {
         if (socket.isAlive === false) {
             return socket.terminate();
@@ -89,10 +96,6 @@ function releaseControlsColor (color) {
     }
 }
 
-function getControlsColorsTable () {
-    return controlsCollors;
-}
-
 function validateAndSendMessageToBot( message ) {
     if(message.uuid !== controlsCollors[message.color]) {
         console.log('Bot uuid mismatch!');
@@ -102,6 +105,9 @@ function validateAndSendMessageToBot( message ) {
     serialWrite(command);
 }
 
-module.exports = {
-    getControlsColorsTable
-};
+function flushRobot (color) {
+    serialWrite(`${color}:stop\n`);
+    setTimeout(() => {
+        serialWrite(`${color}:steady\n`);
+    }, 100);
+}
