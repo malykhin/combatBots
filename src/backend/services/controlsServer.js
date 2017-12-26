@@ -1,13 +1,15 @@
 const WebSocket = require('ws');
 const uuid = require('uuid/v4');
 
-const { serialWrite } = require('./serialPort');
+const { serialWrite, isPortBusy } = require('./serialPort');
 const config = require('../../../config');
 
-const controlsCollors = {
+const controlsColors = {
     red: null,
     blue: null
 };
+
+const commandsBuffer = [];
 
 const socketServer = new WebSocket.Server({port: config.controlsPort, perMessageDeflate: false});
 
@@ -81,9 +83,9 @@ setInterval(() => {
 }, config.controlsTimeout);
 
 function getControlsColor (uuid) {
-    for (let color in controlsCollors) {
-        if (!controlsCollors[color]) {
-            controlsCollors[color] = uuid;
+    for (let color in controlsColors) {
+        if (!controlsColors[color]) {
+            controlsColors[color] = uuid;
             return color;
         }
     }
@@ -91,23 +93,51 @@ function getControlsColor (uuid) {
 }
 
 function releaseControlsColor (color) {
-    if (color in controlsCollors) {
-        controlsCollors[color] = null;
+    if (color in controlsColors) {
+        controlsColors[color] = null;
     }
 }
 
 function validateAndSendMessageToBot( message ) {
-    if(message.uuid !== controlsCollors[message.color]) {
+    if(message.uuid !== controlsColors[message.color]) {
         console.log('Bot uuid mismatch!');
         return;
     }
     const command = `${message.color}:${message.command}\n`;
-    serialWrite(command);
+
+    if ( isPortBusy() ) {
+        console.log('Serial port is busy');
+        commandsBuffer.push(command);
+        scheduleCommand();
+    } else {
+        serialWrite(command);
+    }
+}
+
+function scheduleCommand () {
+    if ( commandsBuffer.length ) {
+        if (!isPortBusy()) {
+            const command = commandsBuffer.shift();
+            serialWrite(command);
+        } else {
+            setImmediate( () => {
+                scheduleCommand()
+            });
+        }
+    }
 }
 
 function flushRobot (color) {
-    serialWrite(`${color}:stop\n`);
-    setTimeout(() => {
-        serialWrite(`${color}:steady\n`);
-    }, 100);
+    if (!isPortBusy()) {
+        serialWrite(`${color}:stop\n`);
+        setTimeout(() => {
+            serialWrite(`${color}:steady\n`);
+        }, 100);
+    } else {
+        setImmediate( () => {
+            flushRobot (color);
+        });
+    }
 }
+
+module.exports = { flushRobot};

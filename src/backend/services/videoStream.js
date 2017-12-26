@@ -4,7 +4,9 @@ const config = require('../../../config');
 const videoStream = spawn(
     'ffmpeg', [
         '-f', 'avfoundation',
-        '-framerate', '30',
+        '-r', '30',
+        '-s', '1280x960',
+        '-pix_fmt', 'yuyv422',
         '-i', config.videoDevice,
         '-f', 'mpegts',
         '-codec:v', 'mpeg1video',
