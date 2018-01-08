@@ -4,7 +4,7 @@ const Readline = SerialPort.parsers.Readline;
 const config = require('../../../config');
 const { flushRobot } = require('./controlsServer');
 
-SerialPort.list().then(data => console.log('Available ports:', data));
+//SerialPort.list().then(data => console.log('Available ports:', data));
 
 const port = new SerialPort(config.serialPort, {
     baudRate: config.serialBaudRate,

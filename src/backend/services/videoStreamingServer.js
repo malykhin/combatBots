@@ -27,5 +27,9 @@ socketServer.broadcast = (data) => {
 };
 
 videoStream.on('data' , data => {
-    socketServer.broadcast(data);
+	socketServer.broadcast(data);
+});
+
+videoStream.on('error' , error => {
+       // console.log(error);
 });

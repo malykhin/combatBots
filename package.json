@@ -1,11 +1,13 @@
 {
-  "name": "node-webrtc",
+  "name": "node-combat-bots",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "watch:frontend": "NODE_ENV=development webpack --watch",
-    "watch:backend": "nodemon ./src/backend/index.js"
+    "watch:frontend": "webpack --watch",
+    "watch:backend": "nodemon ./src/backend/index.js",
+    "build": "webpack",
+    "start": "node ./src/backend/index.js"
   },
   "author": "",
   "license": "ISC",
