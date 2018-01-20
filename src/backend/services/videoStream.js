@@ -3,7 +3,7 @@ const config = require('../../../config');
 
 const videoStream = spawn(
     'ffmpeg', [
-        '-f', 'v4l2',
+    '-f', 'v4l2',
 	'-framerate', '25',
 	'-video_size', '800x600',
 //	'-vcodec', 'mjpeg',
@@ -13,8 +13,8 @@ const videoStream = spawn(
 	'-codec:v', 'mpeg1video',
 	'-s', '800x600',
 	'-b:v', '800k',
-//        '-bf', '0',
-        'pipe:1'
+//  '-bf', '0',
+    'pipe:1'
 	],
     { stdio: 'pipe' }
 );

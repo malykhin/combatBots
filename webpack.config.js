@@ -2,17 +2,28 @@ const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
+const HtmlWebpackPluginIndex = new HtmlWebpackPlugin({
     template: './src/frontend/index.html',
     filename: 'index.html',
-    inject: 'body'
+    inject: 'body',
+    chunks: ['index']
+});
+
+const HtmlWebpackPluginVideo = new HtmlWebpackPlugin({
+    template: './src/frontend/video.html',
+    filename: 'video.html',
+    inject: 'body',
+    chunks: ['video']
 });
 
 module.exports = {
-    entry: './src/frontend/index.js',
+    entry: {
+        index: './src/frontend/index.js',
+        video: './src/frontend/video.js'
+    },
     output: {
         path: path.resolve('dist'),
-        filename: 'bundle.js'
+        filename: '[name].js'
     },
     module: {
         loaders: [
@@ -24,6 +35,7 @@ module.exports = {
         ]
     },
     plugins: [
-        HtmlWebpackPluginConfig
+        HtmlWebpackPluginIndex,
+        HtmlWebpackPluginVideo
     ]
 };
